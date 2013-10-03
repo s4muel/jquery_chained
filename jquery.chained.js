@@ -37,7 +37,7 @@
                     /* If multiple parents build classname like foo\bar. */
                     var selected = "";
                     $(parent_selector).each(function() {
-                        selected += "\\" + $(":selected", this).val();
+                        selected += "\\" + $(":selected", this).attr('data-ch-id');
                     });
                     selected = selected.substr(1);
 
@@ -45,12 +45,11 @@
                     /* TODO: This should be dynamic and check for each parent */
                     /*       without subclassing. */
                     var first = $(parent_selector).first();
-                    var selected_first = $(":selected", first).val();
-                
+                    var selected_first = $(":selected", first).attr('data-ch-id');
                     $("option", self).each(function() {
                         /* Remove unneeded items but save the default value. */
-                        if (!$(this).hasClass(selected) &&
-                            !$(this).hasClass(selected_first) && $(this).val() !== "") {
+                        if (!$(this).hasChainTo(selected) &&
+                            !$(this).hasChainTo(selected_first) && $(this).val() !== "") {
                                 $(this).remove();
                         }
                     });
@@ -82,5 +81,13 @@
     
     /* Default settings for plugin. */
     $.fn.chained.defaults = {};
-    
+    /**
+     * custom function to check current elements data-ch-p attribute if it contains select_id parameter
+     */
+    $.fn.hasChainTo = function ( select_id ) {
+      if(this.attr('data-ch-p') && this.attr('data-ch-p').split(' ').indexOf( select_id ) >= 0){
+          return true;
+      }
+      return false;
+    }
 })(jQuery, window, document);
